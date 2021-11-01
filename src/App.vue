@@ -4,12 +4,12 @@
       <h1 class="todo-list__ttl">Todoリスト</h1>
       <div class="todo-list__inner">
         <div class="todo-list__input">
-          <input v-model="todo">
+          <input v-model="state.todo">
         </div>
 
         <button class="todo-list__btn" @click="addTodo">追加</button>
         <ul class="todo-list__list">
-          <li class="todo-list__item" v-for="(todo, index) in todos" :key="index">
+          <li class="todo-list__item" v-for="(todo, index) in state.todos" :key="index">
             {{todo}} <span class="todo-list__remove" @click="removeTodo(index)"></span>
           </li>
         </ul>
@@ -21,25 +21,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import { defineComponent, reactive } from 'vue';
 export default defineComponent({
   name: 'App',
-  data() {
-    return {
+  //setup関数の追加
+  setup() {
+    const state = reactive({
       todo: '',
       todos: [] as string[]
+    })
+
+    const addTodo = () => {
+      if(state.todo !== '') {
+        state.todos.push(state.todo);
+        state.todo = ''
+      }
     }
-  },
-  methods: {
-    addTodo() {
-      this.todos.push(this.todo)
-      this.todo = ''
-    },
-    removeTodo(index: number) {
-      this.todos.splice(index, 1)
+    const removeTodo = (index: number) => state.todos.splice(index, 1);
+
+    return {
+      state,
+      addTodo,
+      removeTodo
     }
   }
+  //setup関数追加練習
+  //setup() {
+  //  const state = reactive({
+  //    message: 'Hello Wold'
+  //  })
+  //  return {
+  //    //toRefsというメソッドを利用するとreactiveをrefsに変換することができる
+  //    ...toRefs(state)
+  //  }
+  //  //const message = ref('Hello World')
+  //  //return {
+  //  //  message,
+  //  //}
+  //}
+
 });
 </script>
 
